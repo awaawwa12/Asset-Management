@@ -16,6 +16,14 @@ class PersediaanController extends Controller
     // Menampilkan histori pengambilan barang dan stock barang (same page)
     public function index(Request $request)
     {
+        // Get sorting parameters
+        $sortField = $request->get('sort', 'id');
+        $sortDirection = $request->get('direction', 'desc');
+        
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
         // Pickups query - ensure items relationship is always eager loaded with product
         $pickupQuery = Pickup::with(['user', 'floor', 'items.product']);
         
@@ -29,7 +37,26 @@ class PersediaanController extends Controller
             });
         }
         
-        $pickups = $pickupQuery->latest()->paginate(10);
+        // Apply sorting - ensure sortField is allowed
+        $allowedSortFields = ['id', 'created_at', 'updated_at', 'requested_by', 'floor_id'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'id';
+        }
+        
+        // Handle sorting by user name (requires join or orderBy on relationship)
+        if ($sortField === 'requested_by') {
+            $pickups = $pickupQuery->select('pickups.*')
+                ->join('users', 'pickups.requested_by', '=', 'users.id')
+                ->orderBy('users.name', $sortDirection)
+                ->paginate(10);
+        } elseif ($sortField === 'floor_id') {
+            $pickups = $pickupQuery->select('pickups.*')
+                ->join('floors', 'pickups.floor_id', '=', 'floors.id')
+                ->orderBy('floors.name', $sortDirection)
+                ->paginate(10);
+        } else {
+            $pickups = $pickupQuery->orderBy($sortField, $sortDirection)->paginate(10);
+        }
 
         // Products query
         $productQuery = Product::with(['category', 'stockBalance']);
@@ -49,7 +76,7 @@ class PersediaanController extends Controller
         // All products for the form in modal - eager load relationships and append stock_balance
         $allProducts = Product::with(['category', 'size', 'stockBalances'])->get();
 
-        return view('persediaan.index', compact('pickups', 'products', 'users', 'floors', 'allProducts'));
+        return view('persediaan.index', compact('pickups', 'products', 'users', 'floors', 'allProducts', 'sortField', 'sortDirection'));
     }
 
     // Form catat pengambilan barang

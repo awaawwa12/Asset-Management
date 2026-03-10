@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    // Tampilkan daftar user
+    public function index(Request $request)
+    {
+        $users = User::paginate(15);
+        return view('users.index', compact('users'));
+    }
+
     // Tampilkan form login
     public function loginForm()
     {

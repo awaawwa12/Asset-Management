@@ -12,18 +12,46 @@ class StockController extends Controller
     // Menampilkan daftar stok barang
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'stockBalance']);
+        // Get sorting parameters from query string, with defaults
+        $sortField = $request->get('sort', 'name'); // default column
+        $sortDirection = $request->get('direction', 'asc'); // default direction
+
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        $query = Product::with(['category', 'size'])
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('sizes', 'products.size_id', '=', 'sizes.id')
+            ->leftJoin(\Illuminate\Support\Facades\DB::raw('(SELECT product_id, COALESCE(SUM(qty_on_hand), 0) as total_stock FROM stock_balances GROUP BY product_id) as sb'), 'products.id', '=', 'sb.product_id')
+            ->select('products.*', 'categories.name as category_name', 'sizes.name as size_name',
+                \Illuminate\Support\Facades\DB::raw('COALESCE(sb.total_stock, 0) as total_stock'));
 
         if ($request->q) {
             $q = $request->q;
-            $query->where('name','like',"%$q%")
-                  ->orWhereHas('category', fn($c) => $c->where('name','like',"%$q%"));
+            $query->where(function($qb) use ($q) {
+                $qb->where('products.name','like',"%$q%")
+                   ->orWhere('categories.name','like',"%$q%");
+            });
+        }
+
+        if ($sortField === 'category') {
+            $query->orderBy('categories.name', $sortDirection);
+        } elseif ($sortField === 'size') {
+            $query->orderBy('sizes.name', $sortDirection);
+        } elseif ($sortField === 'stock') {
+            $query->orderBy('total_stock', $sortDirection);
+        } else {
+            $allowedFields = ['id', 'name'];
+            $field = in_array($sortField, $allowedFields) ? $sortField : 'id';
+            $query->orderBy('products.' . $field, $sortDirection);
         }
 
         $products = $query->paginate(6);
         $floors = Floor::all();
-
-        return view('stock.index', compact('products', 'floors'));
+        
+        return view('stock.index', compact('products', 'floors', 'sortField', 'sortDirection'));
     }
 
     // Form tambah stok barang - redirect to stock index (view not implemented)

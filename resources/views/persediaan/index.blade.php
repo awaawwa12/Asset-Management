@@ -345,11 +345,23 @@ document.addEventListener('DOMContentLoaded', function() {
             <table class="table table-bordered table-striped mb-0" style="padding-top: 20px;">
                 <thead>
                     <tr class="no-border">
-                        <th style="width: 65px; vertical-align: middle;">#</th>
-                        <th style="width: 230px; vertical-align: middle; padding-left: 15px;">NAMA PENGAMBIL</th>
+                        <th style="width: 65px; vertical-align: middle;"><a href="{{ route('persediaan.index', ['sort' => 'id', 'direction' => ($sortField === 'id' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                        #
+                        {!! $sortField === 'id' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                        </a> </th>
+                        <th style="width: 230px; vertical-align: middle; padding-left: 15px;"><a class="sort-link" href="{{ route('persediaan.index', [
+                        'sort' => 'requested_by',
+                        'direction' => ($sortField === 'requested_by' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                        NAMA PENGAMBIL {!! $sortField === 'requested_by' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                        </a></th>
                         <th style="vertical-align: middle; padding-left: 15px;">NAMA BARANG</th>
-                        <th style="width: 185px; vertical-align: middle; padding-left: 15px;">TANGGAL PENGAMBILAN</th>
-                        <th style="width: 155px; text-align: center; vertical-align: middle;">UNTUK LANTAI?</th>
+                        <th style="width: 185px; vertical-align: middle; padding-left: 15px;"><a href="{{ route('persediaan.index', [
+                        'sort' => 'created_at', 'direction' => ($sortField === 'created_at' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                        TANGGAL PENGAMBILAN {!! $sortField === 'created_at' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                        </a></th>
+                        <th style="width: 155px; text-align: center; vertical-align: middle;"><a href="{{ route('persediaan.index', ['sort' => 'floor_id', 'direction' => ($sortField === 'floor_id' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                        UNTUK LANTAI? {!! $sortField === 'floor_id' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                        </a></th>
                         <th style="width: 110px; text-align: left; vertical-align: middle; padding-left: 15px;">LIHAT DETAIL</th>
                     </tr>
                 </thead>
