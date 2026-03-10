@@ -14,13 +14,21 @@ return new class extends Migration
         Schema::create('cache', function (Blueprint $table) {
             $table->string('key')->primary();
             $table->mediumText('value');
+<<<<<<< HEAD
             $table->integer('expiration')->index();
+=======
+            $table->integer('expiration');
+>>>>>>> mai/main
         });
 
         Schema::create('cache_locks', function (Blueprint $table) {
             $table->string('key')->primary();
             $table->string('owner');
+<<<<<<< HEAD
             $table->integer('expiration')->index();
+=======
+            $table->integer('expiration');
+>>>>>>> mai/main
         });
     }
 
@@ -29,7 +37,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+<<<<<<< HEAD
         Schema::dropIfExists('cache');
         Schema::dropIfExists('cache_locks');
     }
 };
+=======
+        Schema::dropIfExists('cache_locks');
+        Schema::dropIfExists('cache');
+    }
+};
+>>>>>>> mai/main

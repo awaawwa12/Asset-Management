@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+<<<<<<< HEAD
+=======
+use Carbon\Carbon;
+>>>>>>> mai/main
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+<<<<<<< HEAD
         //
+=======
+        Carbon::setLocale('id');
+>>>>>>> mai/main
     }
 }
