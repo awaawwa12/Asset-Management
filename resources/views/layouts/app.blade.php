@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Stock Barang & Obat</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="assets/fontsAwesome/css/all.min.css">
     
     <style>
@@ -79,19 +78,19 @@
             color: #64748b;
             margin-top: 10px;
         }
-    <style>
+        
         footer{
-          padding: 3rem 7% 1.5rem 7%;
-          background-color: #1e293b;
-          color: #e2e8f0;
+            padding: 3rem 7% 1.5rem 7%;
+            background-color: #1e293b;
+            color: #e2e8f0;
         }
         footer .footer-inner{
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          width: 100%;
-          gap: 2rem;
-          flex-wrap: wrap;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            gap: 2rem;
+            flex-wrap: wrap;
         }
         .footer-brand, .footer-links, .footer-contact, .footer-social{
             flex: 1;
@@ -169,9 +168,9 @@
             border-top: 1px solid #334155;
         }
         .footer-credit p{
-          font-size: 0.875rem;
-          color: #64748b;
-          margin: 0;
+            font-size: 0.875rem;
+            color: #64748b;
+            margin: 0;
         }
     </style>
 </head>
@@ -199,18 +198,17 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" style="color: #05445E;
-            " id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item me">
-                        <a class="nav-link px-2 {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"  style="color:#05445E;"><i class="fa fa-home"></i>Dashboard</a>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" style="color:#05445E;"><i class="fa fa-home"></i>Dashboard</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="persediaanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #05445E;">
-                       <i class="fa fa-clipboard-list"></i>Persediaan
+                            <i class="fa fa-clipboard-list"></i>Persediaan
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="persediaanDropdown">
-                            <li><a class="dropdown-item" href="{{ route('persediaan.index') }}" ><i class="fa fa-link" style="margin-right: 8px;"></i>Histori</a></li>
+                            <li><a class="dropdown-item" href="{{ route('persediaan.index') }}"><i class="fa fa-link" style="margin-right: 8px;"></i>Histori</a></li>
                             <li><a class="dropdown-item" href="{{ route('stock.index') }}"><i class="fa-solid fa-list" style="margin-right:8px;"></i>Stock</a></li>
                         </ul>
                     </li>
@@ -232,42 +230,41 @@
     </nav>
 
     {{-- Konten halaman --}}
-    
     @yield('content')
     
-    <!-- footer -->
+    {{-- Footer --}}
     @if(Request::is('dashboard'))
     <footer>
-      <div class="footer-inner">
-         <div class="footer-brand">
-           <h4>Stock Barang & Obat</h4>
-           <p>Sistem pengelolaan inventaris dan persediaan barang untuk kebutuhan operasional.</p>
-         </div>
-         <div class="footer-links">
-             <h5>Navigasi</h5>
-             <ul>
-                 <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                 <li><a href="{{ route('persediaan.index') }}">Histori Persediaan</a></li>
-                 <li><a href="{{ route('stock.index') }}">Stock Barang</a></li>
-                 <li><a href="{{ route('masterdata.produk.index') }}">Master Data</a></li>
-             </ul>
-         </div>
-         <div class="footer-contact">
-             <h5>Kontak</h5>
-             <p><i class="fas fa-envelope"></i> support@company.com</p>
-             <p><i class="fas fa-phone"></i> +62 xxx xxxx</p>
-             <p><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</p>
-         </div>
-         <div class="footer-social">
-             <h5>Ikuti Kami</h5>
-             <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-             <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-             <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-         </div>
-       </div>
-       <div class="footer-credit">
-           <p>&copy; {{ date('Y') }} Stock Barang & Obat. All rights reserved.</p>
-       </div>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h4>Stock Barang & Obat</h4>
+                <p>Sistem pengelolaan inventaris dan persediaan barang untuk kebutuhan operasional.</p>
+            </div>
+            <div class="footer-links">
+                <h5>Navigasi</h5>
+                <ul>
+                    <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ route('persediaan.index') }}">Histori Persediaan</a></li>
+                    <li><a href="{{ route('stock.index') }}">Stock Barang</a></li>
+                    <li><a href="{{ route('masterdata.produk.index') }}">Master Data</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h5>Kontak</h5>
+                <p><i class="fas fa-envelope"></i> support@company.com</p>
+                <p><i class="fas fa-phone"></i> +62 xxx xxxx</p>
+                <p><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</p>
+            </div>
+            <div class="footer-social">
+                <h5>Ikuti Kami</h5>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="footer-credit">
+            <p>&copy; {{ date('Y') }} Stock Barang & Obat. All rights reserved.</p>
+        </div>
     </footer>
     @endif
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
