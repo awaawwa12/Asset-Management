@@ -6,13 +6,24 @@ use App\Models\Product;
 use App\Models\StockBalance;
 use App\Models\Floor;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class StockController extends Controller
 {
     // Menampilkan daftar stok barang
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'stockBalance']);
+
+        // Get sorting parameters from query string, with defaults
+        $sortField = $request->get('sort', 'name'); // default column
+        $sortDirection = $request->get('direction', 'asc'); // default direction
+
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        $query = Product::with(['category', 'size', 'stockBalances']);
 
         if ($request->q) {
             $q = $request->q;
@@ -21,6 +32,28 @@ class StockController extends Controller
                       ->orWhereHas('category', fn($c) => $c->where('name','like',"%$q%"))
                       ->orWhereHas('size', fn($s) => $s->where('name','like',"%$q%"));
             });
+        }
+
+        // Apply sorting
+        $allowedFields = ['id', 'name', 'category', 'size', 'stock'];
+        if (!in_array($sortField, $allowedFields)) {
+            $sortField = 'name';
+        }
+
+        if ($sortField === 'category') {
+            $query->join('categories', 'products.category_id', '=', 'categories.id')
+                  ->orderBy('categories.name', $sortDirection)
+                  ->select('products.*');
+        } elseif ($sortField === 'size') {
+            $query->join('sizes', 'products.size_id', '=', 'sizes.id')
+                  ->orderBy('sizes.name', $sortDirection)
+                  ->select('products.*');
+        } elseif ($sortField === 'stock') {
+            $query->leftJoin('stock_balances', 'products.id', '=', 'stock_balances.product_id')
+                  ->orderBy('stock_balances.qty_on_hand', $sortDirection)
+                  ->select('products.*');
+        } else {
+            $query->orderBy('products.' . $sortField, $sortDirection);
         }
 
         // Get page from session or URL, default to 1
@@ -33,7 +66,7 @@ class StockController extends Controller
         
         $floors = Floor::all();
 
-        return view('stock.index', compact('products', 'floors'));
+        return view('stock.index', compact('products', 'floors', 'sortField', 'sortDirection'));
     }
 
     // Form tambah stok barang - redirect to stock index (view not implemented)

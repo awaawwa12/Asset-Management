@@ -12,10 +12,47 @@ class FloorController extends Controller
      */
     public function index(Request $request)
     {
+        $sortField = $request->sort ?? 'id';
+        $sortDirection = $request->direction ?? 'asc';
+        
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+        
+        // Validate sort field
+        $allowedFields = ['id', 'name', 'is_active', 'created_at', 'stock_balance_count', 'pickup_count'];
+        if (!in_array($sortField, $allowedFields)) {
+            $sortField = 'id';
+        }
+        
         $page = $request->page ?? session('lantai_page', 1);
-        $floors = Floor::paginate(7, ['*'], 'page', $page);
+        
+        // Build query with count subqueries
+        $floors = Floor::select('floors.*')
+            ->selectSub(function ($query) {
+                $query->from('stock_balances')
+                    ->whereColumn('stock_balances.floor_id', 'floors.id')
+                    ->selectRaw('COUNT(*)');
+            }, 'stock_balance_count')
+            ->selectSub(function ($query) {
+                $query->from('pickups')
+                    ->whereColumn('pickups.floor_id', 'floors.id')
+                    ->selectRaw('COUNT(*)');
+            }, 'pickup_count');
+        
+        // Apply sorting
+        if ($sortField === 'stock_balance_count') {
+            $floors = $floors->orderBy('stock_balance_count', $sortDirection);
+        } elseif ($sortField === 'pickup_count') {
+            $floors = $floors->orderBy('pickup_count', $sortDirection);
+        } else {
+            $floors = $floors->orderBy($sortField, $sortDirection);
+        }
+        
+        $floors = $floors->paginate(7, ['*'], 'page', $page);
         session(['lantai_page' => $floors->currentPage()]);
-        return view('masterdata.lantai', compact('floors'));
+        return view('masterdata.lantai', compact('floors', 'sortField', 'sortDirection'));
     }
 
     /**

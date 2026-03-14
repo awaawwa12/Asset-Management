@@ -133,14 +133,81 @@
     #periodBarChart {
         max-height: 300px;
     }
+
+    .info-boxes {
+		display: flex;
+        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-gap: 24px;
+        margin-bottom: 100px;
+        justify-content: center;
+        align-items: center;
+	}
+
+    .info-box {
+        background: white;
+        height: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 3em;
+        border: 1px solid @bgDark;
+        border-radius: 5px;
+    }
+			
+    .box-icon {
+        svg {
+            display: block;
+            width: 48px;
+            height: 48px;
+            
+            path,
+            circle {
+                fill: @colorLight;
+            }
+        }
+    }
 </style>
 @section('content')
 <!-- Home Section -->
 <div class="hero home-section" id="homeSection">
     <div class="hero-content">
         <div class="hero-text">
-            <h1>Selamat Datang di Dashboard</h1>
-            <p class="second-text">Silakan pilih menu dari navigasi di atas.</p>
+            <h1>Halo {{ auth()->user()->name ?? 'Guest' }}, Selamat Datang di </h1><h2>PT. Rekayasa Engineering</h2>
+            <p class="second-text">Your Engineering Partner.</p>
+
+        <ul class="info-boxes">
+            <li class="info-box">
+                <div class="box-content">
+                    <h2 class="mb-4">{{ $totalProduk }}</h2>
+                    <p class="mb-1">Total Produk</p>
+                </div>
+            </li>
+            <li class="info-box">
+                <div class="box-content">
+                    <h2 class="mb-4">~{{ round($avgStok, 2) }}</h2>
+                    <p class="mb-1">Rata Rata Stok Tersedia</p>
+                </div>
+            </li>
+            <li class="info-box">
+                <div class="box-content">
+                    <h2 class="mb-4">{{ $totalPickup }}</h2>
+                    <p class="mb-1">Total Pengambilan</p>
+                </div>
+            </li>
+            <li class="info-box">
+                <div class="box-content">
+                    <h2 class="mb-4">{{ $totalUser }}</h2>
+                    <p class="mb-1">Total User</p>
+                </div>
+            </li>
+             <li class="info-box">
+                <div class="box-content">
+                    <h2 class="mb-4">{{ $totalPerson }}</h2>
+                    <p class="mb-1">Total Person</p>
+                </div>
+            </li>
+        </ul>
             
             <!-- Toggle Button -->
             <button class="toggle-stats-btn" id="toggleStatsBtn" onclick="toggleStats()">
@@ -230,7 +297,7 @@
                                         <tr>
                                             <th>No. Pengambilan</th>
                                             <th>Tanggal</th>
-                                            <th>Peminta</th>
+                                            <th>Pemintaan</th>
                                             <th>Lantai</th>
                                             <th>Produk</th>
                                             <th>Jumlah</th>

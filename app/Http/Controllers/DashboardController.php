@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Person;
 use App\Models\Product;
 use App\Models\StockBalance;
 use App\Models\Pickup;
 use App\Models\PickupLine;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class DashboardController extends Controller
 {
@@ -14,7 +17,11 @@ class DashboardController extends Controller
     {
         // Ringkasan data
         $totalProduk = Product::count();
-        $totalStok   = StockBalance::sum('qty_on_hand');
+        $avgStok = StockBalance::avg('qty_on_hand');
+        $totalStok = StockBalance::sum('qty_on_hand');
+        $totalPickup = Pickup::count();
+        $totalUser = User::count();
+        $totalPerson = Person::count(); // Assuming totalPerson is the same as totalUser
 
         // Histori pengambilan terbaru (10 terakhir)
         $recentPickups = PickupLine::with([
@@ -30,6 +37,10 @@ class DashboardController extends Controller
         return view('dashboard.index', compact(
             'totalProduk',
             'totalStok',
+            'totalPickup',
+            'totalUser',
+            'totalPerson',
+            'avgStok',
             'recentPickups'
         ));
     }
